@@ -3,95 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Dashboard</title>
+    <title>Home</title>
+
     <link rel="stylesheet" href="home.css">
+
+    <!-- Firebase CDN -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <!-- Custom Firebase -->
+    <script src="firebase.js"></script>
 </head>
+
 <body>
 
 <header class="home-header">
     <div class="header-top">
         <div class="header-left">
-            <img src="profile.png" id="userProfilePic" class="profile-pic" alt="User">
+            <img src="profile.png" class="profile-pic">
             <div>
                 <strong id="displayUserName">Loading...</strong><br>
                 <small id="displayUID">ID: ------</small>
             </div>
-        </div>
-        <div class="header-right">
-            <div class="noti-badge">
-                <img src="notification.png" class="noti-icon">
-                <span class="dot"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="header-slide">
-        <div class="marquee">
-            <span>🔥🔥 আসসালামু আলাইকুম, এই অ্যাপ্লিকেশনের বাহিরে কেউ লেনদেন করবেন না। প্রতারিত হলে আমরা দায়ী থাকব না। 🔥🔥</span>
         </div>
     </div>
 </header>
 
 <div class="slider-container">
     <img id="sliderImg" src="assets/slider/slide1.png">
-    <div class="slider-dots">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-    </div>
 </div>
 
 <div class="card-container">
-    <div class="card">
-        <div class="img-bg"><img src="products/p1.png"></div>
-        <p>Diamond Topup</p>
-        <button onclick="go('buy.html?item=p1')">Buy Now</button>
-    </div>
-    <div class="card">
-        <div class="img-bg"><img src="products/p2.png"></div>
-        <p>Weekly Offer</p>
-        <button onclick="go('buy.html?item=p2')">Buy Now</button>
-    </div>
-    <div class="card">
-        <div class="img-bg"><img src="products/p3.png"></div>
-        <p>Monthly Offer</p>
-        <button onclick="go('buy.html?item=p3')">Buy Now</button>
-    </div>
-    <div class="card">
-        <div class="img-bg"><img src="products/p4.png"></div>
-        <p>Level Up</p>
-        <button onclick="go('buy.html?item=p4')">Buy Now</button>
-    </div>
-    <div class="card">
-        <div class="img-bg"><img src="products/p5.png"></div>
-        <p>Special Pack</p>
-        <button onclick="go('buy.html?item=p5')">Buy Now</button>
-    </div>
-    <div class="card">
-        <div class="img-bg"><img src="products/p6.png"></div>
-        <p>Gift Card</p>
-        <button onclick="go('buy.html?item=p6')">Buy Now</button>
-    </div>
+    <button onclick="go('buy.html?item=p1')">Buy Item</button>
 </div>
 
 <nav class="bottom-nav">
-    <button onclick="go('home.html')" class="active-nav">
-        <img src="home.png"><br>Home
-    </button>
-    <button onclick="go('orders.html')">
-        <img src="order.png"><br>My Order
-    </button>
-    <button onclick="go('message.html')">
-        <img src="message.png"><br>Message
-    </button>
-    <button onclick="profileCheck()">
-        <img src="profile.png"><br>Profile
-    </button>
+    <button onclick="go('home.html')">Home</button>
+    <button onclick="go('orders.html')">Order</button>
+    <button onclick="profileCheck()">Profile</button>
 </nav>
 
+<!-- Page Script -->
 <script src="home.js"></script>
+
 </body>
 </html>
