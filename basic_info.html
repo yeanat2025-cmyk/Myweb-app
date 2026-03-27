@@ -3,137 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Info - Setup</title>
-    
+    <title>Basic Info</title>
+
+    <!-- Firebase CDN -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
+    <!-- Custom Firebase -->
+    <script src="firebase.js"></script>
+
     <style>
-        * { box-sizing: border-box; }
         body {
-            margin: 0; font-family: 'Segoe UI', sans-serif;
-            background-color: #ffffff; padding: 25px;
-            display: flex; flex-direction: column; height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 25px;
         }
-
-        .header { margin-top: 10px; margin-bottom: 25px; }
-        .about-text { color: #00bcd4; font-size: 16px; font-weight: 600; border-left: 4px solid #00bcd4; padding-left: 10px; }
-        .title-text { font-size: 28px; font-weight: bold; color: #1a1a1a; margin-top: 5px; }
-
-        .label { font-size: 17px; font-weight: bold; color: #333; margin: 15px 0 8px; display: block; }
-
         .input-box {
-            width: 100%; background-color: #f1f3f4;
-            border: none; border-radius: 12px;
-            padding: 15px 18px; font-size: 16px;
-            margin-bottom: 20px; outline: none;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: none;
+            background: #f1f3f4;
         }
-
-        .dob-container {
-            display: flex; justify-content: space-between;
-            gap: 10px; padding: 20px 0;
-            border-top: 1px solid #eee; border-bottom: 1px solid #eee;
-            margin-bottom: 20px;
+        .next-btn {
+            width: 100%;
+            padding: 16px;
+            background: #00d3ed;
+            color: white;
+            border: none;
+            border-radius: 40px;
         }
         .dob-select {
-            flex: 1; border: none; background: #f1f3f4;
-            padding: 10px; border-radius: 8px;
-            font-size: 18px; font-weight: bold; text-align: center;
-        }
-
-        .spacer { flex-grow: 1; }
-
-        .next-btn {
-            background-color: #00d3ed; color: white;
-            border: none; width: 100%; padding: 16px;
-            border-radius: 50px; font-size: 18px; font-weight: bold;
-            cursor: pointer; box-shadow: 0 8px 15px rgba(0, 211, 237, 0.3);
-            margin-bottom: 10px;
+            width: 30%;
+            padding: 10px;
         }
     </style>
 </head>
+
 <body>
 
-    <div class="header">
-        <div class="about-text">Aboutyou</div>
-        <div class="title-text">Basic info</div>
-    </div>
+<h2>Basic Info</h2>
 
-    <label class="label">Nickname</label>
-    <input type="text" id="nickname" class="input-box" placeholder="Enter nickname">
+<input type="text" id="nickname" class="input-box" placeholder="Nickname">
 
-    <label class="label">Region</label>
-    <select id="region" class="input-box">
-        <option value="Bangladesh">🇧🇩 Bangladesh</option>
-        <option value="India">🇮🇳 India</option>
-        <option value="USA">🇺🇸 USA</option>
-        <option value="UK">🇬🇧 UK</option>
-        <option value="Pakistan">🇵🇰 Pakistan</option>
-        <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
-        <option value="UAE">🇦🇪 UAE</option>
-        <option value="Malaysia">🇲🇾 Malaysia</option>
-    </select>
+<select id="region" class="input-box">
+    <option value="Bangladesh">Bangladesh</option>
+    <option value="India">India</option>
+</select>
 
-    <label class="label">Your birthday</label>
-    <div class="dob-container">
-        <select id="day" class="dob-select"></select>
-        <select id="month" class="dob-select"></select>
-        <select id="year" class="dob-select"></select>
-    </div>
+<div>
+    <select id="day" class="dob-select"></select>
+    <select id="month" class="dob-select"></select>
+    <select id="year" class="dob-select"></select>
+</div>
 
-    <div class="spacer"></div>
+<br>
+<button class="next-btn" onclick="saveData()">NEXT</button>
 
-    <button class="next-btn" onclick="saveData()">NEXT</button>
+<script>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCzv08ydHYvUue_sgEjDoT221ocAedXYfM",
-            authDomain: "myproject-9f21b.firebaseapp.com",
-            projectId: "myproject-9f21b",
-            storageBucket: "myproject-9f21b.firebasestorage.app",
-            messagingSenderId: "670760388595",
-            appId: "1:670760388595:web:a88159aa1ef33a4da37486"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+// 🔐 Login check
+auth.onAuthStateChanged(user => {
+    if (!user) {
+        window.location.href = "login.html";
+    }
+});
 
-        window.onload = () => {
-            const d = document.getElementById('day');
-            const m = document.getElementById('month');
-            const y = document.getElementById('year');
+// DOB setup
+window.onload = () => {
+    const d = day, m = month, y = year;
 
-            for(let i=1; i<=31; i++) d.add(new Option(i, i));
-            for(let i=1; i<=12; i++) m.add(new Option(i, i));
-            let curYear = new Date().getFullYear();
-            for(let i=curYear; i>=1970; i--) y.add(new Option(i, i));
+    for(let i=1; i<=31; i++) d.add(new Option(i, i));
+    for(let i=1; i<=12; i++) m.add(new Option(i, i));
 
-            d.value = 27; m.value = 3; y.value = 2000;
-        };
+    let currentYear = new Date().getFullYear();
+    for(let i=currentYear; i>=1970; i--) y.add(new Option(i, i));
 
-        function saveData() {
-            const user = auth.currentUser;
-            const nick = document.getElementById('nickname').value;
-            const country = document.getElementById('region').value; // এইটি আপনার সিলেক্ট করা দেশ
-            const dob = document.getElementById('day').value + "/" + 
-                        document.getElementById('month').value + "/" + 
-                        document.getElementById('year').value;
+    d.value = 1;
+    m.value = 1;
+    y.value = 2000;
+};
 
-            if(!user) return alert("Login session expired!");
-            if(!nick) return alert("Please enter a nickname");
+// Save data
+function saveData() {
+    const user = auth.currentUser;
 
-            // Firestore-এ তথ্য আপডেট করা
-            db.collection("users").doc(user.uid).set({
-                nickname: nick,
-                region: country, // দেশ এখানে সেভ হচ্ছে
-                birthday: dob,
-                setup_step: 1 // প্রথম ধাপ শেষ
-            }, { merge: true }).then(() => {
-                // সফল হলে পাসওয়ার্ড এবং ইউআইডি জেনারেট পেজে যাবে
-                window.location.href = "password.html";
-            }).catch(err => alert("Error: " + err.message));
-        }
-    </script>
+    const nick = nickname.value.trim();
+    const country = region.value;
+
+    const dob = day.value + "/" + month.value + "/" + year.value;
+
+    if (!user) return alert("Login expired!");
+    if (!nick) return alert("Enter nickname");
+
+    db.collection("users").doc(user.uid).set({
+        nickname: nick,
+        region: country,
+        birthday: dob,
+        setup_step: 1
+    }, { merge: true })
+    .then(() => {
+        window.location.href = "password.html";
+    })
+    .catch(err => alert(err.message));
+}
+
+</script>
+
 </body>
 </html>
