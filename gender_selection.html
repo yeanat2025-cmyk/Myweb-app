@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender Selection</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        * { box-sizing: border-box; transition: 0.3s ease; }
+        body {
+            margin: 0; font-family: 'Segoe UI', sans-serif;
+            background-color: #ffffff; height: 100vh;
+            display: flex; flex-direction: column; padding: 25px;
+        }
+
+        .header { margin-top: 20px; }
+        .about-text {
+            color: #00bcd4; font-size: 18px; font-weight: 600;
+            border-left: 4px solid #00bcd4; padding-left: 10px;
+        }
+        .iam-text { font-size: 32px; font-weight: 800; color: #1a1a1a; margin-top: 5px; }
+
+        .selection-container {
+            flex-grow: 1; display: flex; flex-direction: column;
+            justify-content: center; gap: 40px;
+        }
+
+        .option {
+            display: flex; align-items: center; cursor: pointer;
+            filter: grayscale(100%); opacity: 0.5;
+        }
+
+        /* Active State - সিলেক্ট করলে যেমন দেখাবে */
+        .option.active {
+            filter: grayscale(0%); opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .male-row { justify-content: flex-start; }
+        .female-row { justify-content: flex-end; }
+
+        .avatar { width: 150px; height: auto; object-fit: contain; }
+
+        .bubble {
+            padding: 12px 35px; border-radius: 40px;
+            font-size: 20px; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Male Active Color */
+        .active.male-row .bubble {
+            background-color: #2196F3; color: white;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        /* Female Active Color */
+        .active.female-row .bubble {
+            background-color: #ff4081; color: white;
+            box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+        }
+
+        .next-btn {
+            background-color: #00d3ed; color: white; border: none;
+            width: 100%; padding: 16px; border-radius: 50px;
+            font-size: 18px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 211, 237, 0.3);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="about-text">Aboutyou</div>
+        <h1 class="iam-text">I am</h1>
+    </div>
+
+    <div class="selection-container">
+        <div class="option male-row" id="male-opt" onclick="selectGender('male')">
+            <img src="assets/male_avatar.png" alt="Male" class="avatar">
+            <div class="bubble">Male</div>
+        </div>
+
+        <div class="option female-row active" id="female-opt" onclick="selectGender('female')">
+            <div class="bubble">Female</div>
+            <img src="assets/female_avatar.png" alt="Female" class="avatar">
+        </div>
+    </div>
+
+    <button class="next-btn" id="nextBtn" onclick="saveGender()">NEXT</button>
+
+    <script>
+        // ১. Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCzv08ydHYvUue_sgEjDoT221ocAedXYfM",
+            authDomain: "myproject-9f21b.firebaseapp.com",
+            projectId: "myproject-9f21b",
+            storageBucket: "myproject-9f21b.firebasestorage.app",
+            messagingSenderId: "670760388595",
+            appId: "1:670760388595:web:a88159aa1ef33a4da37486"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentGender = "female"; // ডিফল্ট
+
+        function selectGender(gender) {
+            currentGender = gender;
+            // ক্লাস আপডেট
+            document.getElementById('male-opt').classList.remove('active');
+            document.getElementById('female-opt').classList.remove('active');
+            
+            if(gender === 'male') {
+                document.getElementById('male-opt').classList.add('active');
+            } else {
+                document.getElementById('female-opt').classList.add('active');
+            }
+        }
+
+        function saveGender() {
+            const user = auth.currentUser;
+            const btn = document.getElementById('nextBtn');
+
+            if(!user) {
+                alert("Please login first!");
+                return;
+            }
+
+            btn.innerText = "Saving...";
+            btn.disabled = true;
+
+            // Firestore-এ জেন্ডার সেভ করা
+            db.collection("users").doc(user.uid).set({
+                gender: currentGender
+            }, { merge: true })
+            .then(() => {
+                // সেভ হওয়ার পর পরবর্তী পেজে (Basic Info) যাওয়া
+                window.location.href = "basic_info.html";
+            })
+            .catch(err => {
+                alert(err.message);
+                btn.innerText = "NEXT";
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
